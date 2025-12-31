@@ -1,0 +1,77 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="CustomTheme" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <a href="/">
+            <MudHidden Breakpoint="Breakpoint.Xs">
+                <MudImage Src="images/logo-morganite.png"
+                          Alt="Morganite Logo"
+                          Height="50"
+                          Class="mt-2 ml-3 mr-4" />
+            </MudHidden>
+
+            <MudHidden Breakpoint="Breakpoint.SmAndUp">
+                <MudImage Src="images/logo-morganite-pequena.png"
+                          Alt="Morganite Logo Mobile"
+                          Height="35"
+                          Class="mt-2 ml-3 mr-4" />
+            </MudHidden>
+        </a>
+        <NavMenu />
+        <MudSpacer />
+        <MudHidden Breakpoint="Breakpoint.Xs">
+            <MudToggleIconButton @bind-Toggled="@_isDarkMode"
+                                 Icon="@Icons.Material.Filled.DarkMode" Color="@Color.Default"
+                                 ToggledIcon="@Icons.Material.Filled.WbSunny" ToggledColor="@Color.Default" />
+        </MudHidden>
+    </MudAppBar>
+    <MudMainContent>
+        @Body
+        <Footer />
+        <MudFab StartIcon="@Icons.Custom.Brands.WhatsApp"
+                Color="Color.Success"
+                Href=""
+                Target="_blank"
+                Style="position: fixed; bottom: 20px; right: 20px; z-index: 100;" />
+    </MudMainContent>
+</MudLayout>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    bool _drawerOpen = true;
+    private bool _isDarkMode = false;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    MudTheme CustomTheme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = Colors.Pink.Darken3,
+            Secondary = Colors.Pink.Darken2,
+            AppbarBackground = Colors.Orange.Lighten1,
+            Background = Colors.Gray.Lighten4,
+            TextPrimary = Colors.Pink.Darken3,
+            TextSecondary = Colors.Pink.Lighten4,
+            Surface = Colors.Gray.Lighten5
+        },
+        PaletteDark = new PaletteDark()
+        {
+            Primary = Colors.Pink.Darken3,
+            Secondary = Colors.Red.Lighten1
+        }
+    };
+}

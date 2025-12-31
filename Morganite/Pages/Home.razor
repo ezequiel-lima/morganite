@@ -1,0 +1,202 @@
+﻿@page "/"
+@inject ISnackbar Snackbar
+
+<PageTitle>Página inicial</PageTitle>
+
+<MudCarousel Class="mud-width-full" Style="height:300px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" TData="object">
+    <MudCarouselItem Transition="transition" Color="@Color.Primary">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Transition="transition" Color="@Color.Secondary">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Transition="transition">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Color="@Color.Primary" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+</MudCarousel>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudPaper Elevation="2" Class="pa-4 rounded-lg">
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12" sm="6" md="3">
+                <div class="d-flex align-center gap-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" Size="Size.Large" />
+                    <div>
+                        <MudText Typo="Typo.subtitle2"><b>ORÇAMENTO RÁPIDO</b></MudText>
+                        <MudText Typo="Typo.caption">Receba em poucos minutos</MudText>
+                    </div>
+                </div>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <div class="d-flex align-center gap-3">
+                    <MudIcon Icon="@Icons.Material.Filled.WorkspacePremium" Color="Color.Primary" Size="Size.Large" />
+                    <div>
+                        <MudText Typo="Typo.subtitle2"><b>QUALIDADE GARANTIDA</b></MudText>
+                        <MudText Typo="Typo.caption">Excelência em cada detalhe</MudText>
+                    </div>
+                </div>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <div class="d-flex align-center gap-3">
+                    <MudIcon Icon="@Icons.Material.Filled.AttachMoney" Color="Color.Primary" Size="Size.Large" />
+                    <div>
+                        <MudText Typo="Typo.subtitle2"><b>EXCELENTES PREÇOS</b></MudText>
+                        <MudText Typo="Typo.caption">Preços baixos e qualidade</MudText>
+                    </div>
+                </div>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <div class="d-flex align-center gap-3">
+                    <MudIcon Icon="@Icons.Material.Filled.LocalShipping" Color="Color.Primary" Size="Size.Large" />
+                    <div>
+                        <MudText Typo="Typo.subtitle2"><b>ENTREGA GARANTIDA</b></MudText>
+                        <MudText Typo="Typo.caption">Enviamos para todo o Brasil</MudText>
+                    </div>
+                </div>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+</MudContainer>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudGrid Spacing="3" Justify="Justify.FlexStart">
+        @foreach (var card in Cards)
+        {
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard Elevation="3"
+                         @onclick="@(() => OnCardClick(card))"
+                         @onmouseenter="@(() => StartImageRotation(card))"
+                         @onmouseleave="@(() => StopImageRotation(card))"
+                         Style="cursor: pointer; position: relative;"
+                         Class="h-100">
+
+                    @if (card.Images.Count > 0)
+                    {
+                        <MudCardMedia Image="@card.Images[card.CurrentIndex]"
+                                      Height="300"
+                                      Style="background-size: contain; background-position: center; transition: background-image 0.3s ease-in-out;" />
+                    }
+                    else
+                    {
+                        <MudCardMedia Image="https://via.placeholder.com/400x300?text=Sem+Foto" Height="300" />
+                    }
+
+                    <MudCardContent>
+                        <MudText Typo="Typo.h5" GutterBottom="true">@card.Title</MudText>
+
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">
+                            @card.Description
+                        </MudText>
+
+                        @if (card.Images.Count > 1)
+                        {
+                            <div class="d-flex justify-center mt-2 gap-1">
+                                @for (int i = 0; i < card.Images.Count; i++)
+                                {
+                                    var color = (i == card.CurrentIndex) ? Colors.Pink.Darken3 : Colors.Gray.Lighten2;
+                                    <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Style="@($"font-size: 8px; color:{color};")" />
+                                }
+                            </div>
+                        }
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private bool arrows = true;
+    private bool bullets = true;
+    private bool enableSwipeGesture = true;
+    private bool autocycle = true;
+    private Transition transition = Transition.Slide;
+
+    public class CardItem
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public List<string> Images { get; set; } = new List<string>();
+        public int CurrentIndex { get; set; } = 0;
+
+        public CancellationTokenSource? RotationCts { get; set; }
+    }
+
+    List<CardItem> Cards = new List<CardItem>
+    {
+        new CardItem
+        {
+            Title = "Caneca Alumínio 750ml",
+            Description = "Tamanho maior para quem precisa de mais capacidade.",
+            Images = new List<string>
+            {
+                "images/caneca750/750ml Preto Brilho 1.png",
+                "images/caneca750/Caneca 750ml azul bic 1.png",
+                "images/caneca750/Caneca 750ml Branca 1.png",
+                "images/caneca750/Caneca 750ML Prata 2 .png",
+                "images/caneca750/Caneca 750ML Preta 1.png",
+                "images/caneca750/Vermelha 750ml 1.png"
+            }
+        },
+        new CardItem
+        {
+            Title = "Caneca alumínio 500ml",
+            Description = "Caneca de alta qualidade com acabamento premium.",
+            Images = new List<string>
+            {
+                "images/caneca500/canecapretofosco500ml.png",
+                "images/caneca500/canecaazul500ml.png",
+                "images/caneca500/azulbb500ml.png",
+                "images/caneca500/branca500ml.png",
+                "images/caneca500/cobre500ml.png",
+                "images/caneca500/prata500ml.png",
+                "images/caneca500/preta500ml.png",
+                "images/caneca500/rosa500ml.png",
+                "images/caneca500/rosegold500ml.png",
+                "images/caneca500/roxo500ml.png",
+                "images/caneca500/verde500ml.png",
+                "images/caneca500/vermelho500ml.png",
+            }
+        }    
+    };
+
+    private async Task StartImageRotation(CardItem item)
+    {
+        item.RotationCts?.Cancel();
+
+        item.RotationCts = new CancellationTokenSource();
+        var token = item.RotationCts.Token;
+
+        if (item.Images.Count <= 1) return;
+
+        try
+        {
+            while (!token.IsCancellationRequested)
+            {
+                await Task.Delay(1000, token);
+                item.CurrentIndex = (item.CurrentIndex + 1) % item.Images.Count;
+                StateHasChanged();
+            }
+        }
+        catch (TaskCanceledException) 
+        {
+        }
+    }
+
+    private void StopImageRotation(CardItem item)
+    {
+        item.RotationCts?.Cancel();
+        item.CurrentIndex = 0;
+    }
+
+    private void OnCardClick(CardItem item)
+    {
+        Snackbar.Add($"Você clicou em: {item.Title}", Severity.Info);
+    }
+}
