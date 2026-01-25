@@ -1,7 +1,7 @@
 ﻿@page "/"
 @inject ISnackbar Snackbar
 
-<PageTitle>Página inicial</PageTitle>
+<PageTitle>Morganite</PageTitle>
 
 <MudCarousel Class="mud-width-full" Style="height:300px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" TData="object">
     <MudCarouselItem Transition="transition" Color="@Color.Primary">
@@ -68,35 +68,53 @@
     <MudGrid Spacing="3" Justify="Justify.FlexStart">
         @foreach (var card in Cards)
         {
-            <MudItem xs="12" sm="6" md="4">
+            <MudItem xs="12" sm="6" md="4" Class="d-flex">
+
                 <MudCard Elevation="3"
                          @onclick="@(() => OnCardClick(card))"
                          @onmouseenter="@(() => StartImageRotation(card))"
                          @onmouseleave="@(() => StopImageRotation(card))"
-                         Style="cursor: pointer; position: relative;"
-                         Class="h-100">
+                         Style="cursor: pointer; position: relative; width: 100%;"
+                         Class="d-flex flex-column flex-grow-1">
 
                     @if (card.Images.Count > 0)
                     {
                         <MudCardMedia Image="@card.Images[card.CurrentIndex]"
                                       Height="300"
-                                      Style="background-size: contain; background-position: center; transition: background-image 0.3s ease-in-out;" />
+                                      Style="@($"background-color: white; background-size: contain; background-position: center; transition: background-image 0.3s ease-in-out;")" />
                     }
                     else
                     {
                         <MudCardMedia Image="https://via.placeholder.com/400x300?text=Sem+Foto" Height="300" />
                     }
 
-                    <MudCardContent>
-                        <MudText Typo="Typo.h5" GutterBottom="true">@card.Title</MudText>
+                    @if (card.Images.Count > 1)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Surface"
+                                       Size="Size.Small"
+                                       Style="position: absolute; top: 150px; left: 10px; transform: translateY(-50%); z-index: 10;"
+                                       OnClick="@((e) => PreviousImage(e, card))" />
 
-                        <MudText Typo="Typo.body2" Color="Color.Secondary">
-                            @card.Description
-                        </MudText>
+                        <MudIconButton Icon="@Icons.Material.Filled.ChevronRight"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Surface"
+                                       Size="Size.Small"
+                                       Style="position: absolute; top: 150px; right: 10px; transform: translateY(-50%); z-index: 10;"
+                                       OnClick="@((e) => NextImage(e, card))" />
+                    }
+
+                    <MudCardContent Class="flex-grow-1 d-flex flex-column justify-space-between">
+
+                        <div>
+                            <MudText Typo="Typo.h5" GutterBottom="true">@card.Title</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">@card.Description</MudText>
+                        </div>
 
                         @if (card.Images.Count > 1)
                         {
-                            <div class="d-flex justify-center mt-2 gap-1">
+                            <div class="d-flex justify-center mt-3 gap-1">
                                 @for (int i = 0; i < card.Images.Count; i++)
                                 {
                                     var color = (i == card.CurrentIndex) ? Colors.Pink.Darken3 : Colors.Gray.Lighten2;
@@ -124,7 +142,6 @@
         public string Description { get; set; } = string.Empty;
         public List<string> Images { get; set; } = new List<string>();
         public int CurrentIndex { get; set; } = 0;
-
         public CancellationTokenSource? RotationCts { get; set; }
     }
 
@@ -158,18 +175,96 @@
                 "images/caneca500/prata500ml.png",
                 "images/caneca500/preta500ml.png",
                 "images/caneca500/rosa500ml.png",
-                "images/caneca500/rosegold500ml.png",
                 "images/caneca500/roxo500ml.png",
                 "images/caneca500/verde500ml.png",
-                "images/caneca500/vermelho500ml.png",
+                "images/caneca500/vermelho500ml.png"
             }
-        }    
+        },
+        new CardItem
+        {
+            Title = "Caneca Alumínio 400ml",
+            Description = "Opção versátil e compacta para o dia a dia.",
+            Images = new List<string>
+            {
+                "images/caneca400/Caneca Preta Brilho 400ml.png",
+                "images/caneca400/400ml vermelha.png",
+                "images/caneca400/Caneca 400ML Azul BB.png",
+                "images/caneca400/Caneca 400ml Branca 2.png",
+                "images/caneca400/Caneca 400ml Cobre 2.png",
+                "images/caneca400/Caneca 400ml Lilas 1.png",
+                "images/caneca400/Caneca 400ml Polida .png",
+                "images/caneca400/Caneca Azul bic 400ml.png",               
+                "images/caneca400/Caneca Preta Fosca 400ml 1.png",
+                "images/caneca400/Caneca rosa 400ml.png"
+            }
+        },
+        new CardItem
+        {
+            Title = "Caneca Alumínio 300ml",
+            Description = "O tamanho ideal para brindes e eventos compactos.",
+            Images = new List<string>
+            {
+                "images/caneca300/caneca 300ml preta 2.png"
+            }
+        },
+        new CardItem
+        {
+            Title = "Copo Alumínio 500ml",
+            Description = "Copo resistente, ideal para festas e eventos.",
+            Images = new List<string>
+            {
+                "images/copo500/Copo 500ML 1.png",
+                "images/copo500/Copo 500ML .png",
+                "images/copo500/Copo 500ML 2.png"
+            }
+        },
+        new CardItem
+        {
+            Title = "Copo Alumínio 400ml",
+            Description = "Tamanho intermediário com ótimo acabamento.",
+            Images = new List<string>
+            {
+                "images/copo400/Copo 400ml .png"
+            }
+        },
+        new CardItem
+        {
+            Title = "Copo Alumínio 300ml",
+            Description = "Compacto e prático para todas as ocasiões.",
+            Images = new List<string>
+            {
+                "images/copo300/Copo 300ml 2.png"
+            }
+        }
     };
+
+    private void NextImage(MouseEventArgs e, CardItem item)
+    {
+        item.RotationCts?.Cancel();
+
+        if (item.Images.Count > 0)
+        {
+            item.CurrentIndex = (item.CurrentIndex + 1) % item.Images.Count;
+        }
+    }
+
+    private void PreviousImage(MouseEventArgs e, CardItem item)
+    {
+        item.RotationCts?.Cancel();
+
+        if (item.Images.Count > 0)
+        {
+            item.CurrentIndex--;
+            if (item.CurrentIndex < 0)
+            {
+                item.CurrentIndex = item.Images.Count - 1;
+            }
+        }
+    }
 
     private async Task StartImageRotation(CardItem item)
     {
         item.RotationCts?.Cancel();
-
         item.RotationCts = new CancellationTokenSource();
         var token = item.RotationCts.Token;
 
@@ -184,15 +279,12 @@
                 StateHasChanged();
             }
         }
-        catch (TaskCanceledException) 
-        {
-        }
+        catch (TaskCanceledException) { }
     }
 
     private void StopImageRotation(CardItem item)
     {
         item.RotationCts?.Cancel();
-        item.CurrentIndex = 0;
     }
 
     private void OnCardClick(CardItem item)
