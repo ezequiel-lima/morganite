@@ -3,23 +3,54 @@
 
 <PageTitle>Morganite</PageTitle>
 
-<MudCarousel Class="mud-width-full" Style="height:300px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" TData="object">
-    <MudCarouselItem Transition="transition" Color="@Color.Primary">
-        <div class="d-flex" style="height:100%">
-            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
-        </div>
-    </MudCarouselItem>
-    <MudCarouselItem Transition="transition" Color="@Color.Secondary">
-        <div class="d-flex" style="height:100%">
-            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
-        </div>
-    </MudCarouselItem>
-    <MudCarouselItem Transition="transition">
-        <div class="d-flex" style="height:100%">
-            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Color="@Color.Primary" Size="@Size.Large" />
-        </div>
-    </MudCarouselItem>
-</MudCarousel>
+<MudHidden Breakpoint="Breakpoint.Xs">
+    <MudCarousel Class="mud-width-full"
+                 Style="height:min(26.04vw, 500px);"
+                 ShowArrows="@(Banners.Count > 1 && arrows)"
+                 ShowBullets="@(Banners.Count > 1 && bullets)"
+                 EnableSwipeGesture="@enableSwipeGesture"
+                 AutoCycle="@(Banners.Count > 1 && autocycle)"
+                 TData="string">
+        @foreach (var banner in Banners)
+        {
+            <MudCarouselItem Transition="transition">
+                <MudPaper Elevation="0" Square="true" Class="d-flex justify-center align-center" Style="height:100%;">
+                    <MudImage Src="@banner"
+                              Alt="Banner principal da Morganite"
+                              Width="1920"
+                              Height="500"
+                              Fluid="true"
+                              ObjectFit="ObjectFit.Contain"
+                              ObjectPosition="ObjectPosition.Center" />
+                </MudPaper>
+            </MudCarouselItem>
+        }
+    </MudCarousel>
+</MudHidden>
+
+<MudHidden Breakpoint="Breakpoint.SmAndUp">
+    <MudCarousel Class="mud-width-full"
+                 Style="height:220px;"
+                 ShowArrows="@(Banners.Count > 1 && arrows)"
+                 ShowBullets="@(Banners.Count > 1 && bullets)"
+                 EnableSwipeGesture="@enableSwipeGesture"
+                 AutoCycle="@(Banners.Count > 1 && autocycle)"
+                 TData="string">
+        @foreach (var banner in Banners)
+        {
+            <MudCarouselItem Transition="transition">
+                <MudPaper Elevation="0" Square="true" Style="height:100%; overflow:hidden;">
+                    <MudImage Src="@GetMobileSrc(banner)"
+                              FallbackSrc="@banner"
+                              Alt="Banner principal da Morganite"
+                              Style="width:100%; height:100%;"
+                              ObjectFit="ObjectFit.Cover"
+                              ObjectPosition="@mobileBannerPosition" />
+                </MudPaper>
+            </MudCarouselItem>
+        }
+    </MudCarousel>
+</MudHidden>
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
     <MudPaper Elevation="2" Class="pa-4 rounded-lg">
@@ -135,6 +166,19 @@
     private bool enableSwipeGesture = true;
     private bool autocycle = true;
     private Transition transition = Transition.Slide;
+    private ObjectPosition mobileBannerPosition = ObjectPosition.Left;
+
+    private readonly List<string> Banners = new()
+    {
+        "images/banner/banner.png"
+    };
+
+    private static string GetMobileSrc(string src)
+    {
+        const string suffix = "-mobile";
+        var dotIndex = src.LastIndexOf('.');
+        return dotIndex < 0 ? src + suffix : src.Insert(dotIndex, suffix);
+    }
 
     public class CardItem
     {
